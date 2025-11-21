@@ -1,21 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Editor, { type OnMount } from '@monaco-editor/react';
 import ReactJson from 'react-json-view';
-import { FileJson, FileCode, Copy, Scissors, Clipboard, Play, AlertCircle, Wand2, Trash2, Stethoscope, Heart, Monitor, Sun, Moon, Eye, Edit, RotateCcw, RotateCw, X, Mail, MessageSquare, Send } from 'lucide-react';
+import { FileJson, FileCode, Copy, Scissors, Clipboard, Play, AlertCircle, Wand2, Trash2, Stethoscope, Heart, Monitor, Sun, Moon, Eye, Edit, RotateCcw, RotateCw, X, Mail, MessageSquare, Send, ArrowLeftRight, Rocket } from 'lucide-react';
 import { formatJson, validateJson } from './utils/jsonUtils';
-import { convertToToon } from './utils/toonUtils';
+import { convertToToon, convertToJson, validateToon } from './utils/toonUtils';
 import { repairJson } from './utils/jsonRepairUtils';
 
-type Theme = 'system' | 'light' | 'dark';
+type Theme = 'system' | 'light' | 'dark' | 'space';
 type ViewMode = 'editor' | 'preview';
+type ConversionMode = 'json-to-toon' | 'toon-to-json';
 
 function App() {
-  const [jsonInput, setJsonInput] = useState('');
-  const [toonOutput, setToonOutput] = useState('');
+  const [inputContent, setInputContent] = useState('');
+  const [outputContent, setOutputContent] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [theme, setTheme] = useState<Theme>('system');
   const [viewMode, setViewMode] = useState<ViewMode>('editor');
-  const [parsedJson, setParsedJson] = useState<object>({});
+  const [parsedPreview, setParsedPreview] = useState<object>({});
+  const [conversionMode, setConversionMode] = useState<ConversionMode>('json-to-toon');
 
   // Contact Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,7 +35,7 @@ function App() {
   }, [theme]);
 
   const toggleTheme = () => {
-    const themes: Theme[] = ['system', 'light', 'dark'];
+    const themes: Theme[] = ['system', 'light', 'dark', 'space'];
     const nextIndex = (themes.indexOf(theme) + 1) % themes.length;
     setTheme(themes[nextIndex]);
   };
@@ -42,6 +44,7 @@ function App() {
     switch (theme) {
       case 'light': return <Sun size={16} />;
       case 'dark': return <Moon size={16} />;
+      case 'space': return <Rocket size={16} />;
       default: return <Monitor size={16} />;
     }
   };
@@ -52,21 +55,33 @@ function App() {
 
   const handleFormat = () => {
     try {
-      if (!jsonInput.trim()) return;
-      const formatted = formatJson(jsonInput);
-      setJsonInput(formatted);
-      editorRef.current?.setValue(formatted);
+      if (!inputContent.trim()) return;
+
+      if (conversionMode === 'json-to-toon') {
+        const formatted = formatJson(inputContent);
+        setInputContent(formatted);
+        editorRef.current?.setValue(formatted);
+      } else {
+        // For TOON, we can try to parse to JSON and back to TOON to format it?
+        // Or just leave it as is since we don't have a TOON formatter yet.
+        // Let's try round trip: TOON -> JSON -> TOON
+        const json = convertToJson(inputContent);
+        const toon = convertToToon(json);
+        setInputContent(toon);
+        editorRef.current?.setValue(toon);
+      }
       setError(null);
     } catch (err) {
-      setError('Invalid JSON: Unable to format');
+      setError('Unable to format: ' + (err as Error).message);
     }
   };
 
   const handleRepair = () => {
+    if (conversionMode !== 'json-to-toon') return; // Only for JSON
     try {
-      if (!jsonInput.trim()) return;
-      const repaired = repairJson(jsonInput);
-      setJsonInput(repaired);
+      if (!inputContent.trim()) return;
+      const repaired = repairJson(inputContent);
+      setInputContent(repaired);
       editorRef.current?.setValue(repaired);
       setError(null);
     } catch (err) {
@@ -74,23 +89,34 @@ function App() {
     }
   };
 
-  const handleConvertToToon = () => {
+  const handleConvert = () => {
     try {
-      if (!jsonInput.trim()) return;
+      if (!inputContent.trim()) return;
 
-      // Try to repair first if invalid, or just validate
-      let inputToConvert = jsonInput;
-      if (!validateJson(jsonInput)) {
-        try {
-          inputToConvert = repairJson(jsonInput);
-        } catch (e) {
-          setError('Invalid JSON: Please fix errors before converting');
+      if (conversionMode === 'json-to-toon') {
+        // Try to repair first if invalid, or just validate
+        let inputToConvert = inputContent;
+        if (!validateJson(inputContent)) {
+          try {
+            inputToConvert = repairJson(inputContent);
+          } catch (e) {
+            setError('Invalid JSON: Please fix errors before converting');
+            return;
+          }
+        }
+        const toon = convertToToon(inputToConvert);
+        setOutputContent(toon);
+      } else {
+        // TOON to JSON
+        if (!validateToon(inputContent)) {
+          setError('Invalid TOON format: Check indentation (2 spaces) and syntax (key: value or - item)');
           return;
         }
+        const json = convertToJson(inputContent);
+        // Format the JSON output
+        const formattedJson = formatJson(json);
+        setOutputContent(formattedJson);
       }
-
-      const toon = convertToToon(inputToConvert);
-      setToonOutput(toon);
       setError(null);
     } catch (err) {
       setError('Conversion Failed: ' + (err as Error).message);
@@ -109,7 +135,7 @@ function App() {
       const value = editorRef.current.getValue();
       navigator.clipboard.writeText(value);
       editorRef.current.setValue('');
-      setJsonInput('');
+      setInputContent('');
     }
   };
 
@@ -118,7 +144,7 @@ function App() {
       const text = await navigator.clipboard.readText();
       if (editorRef.current) {
         editorRef.current.setValue(text);
-        setJsonInput(text);
+        setInputContent(text);
       }
     } catch (err) {
       console.error('Failed to read clipboard');
@@ -128,7 +154,7 @@ function App() {
   const handleClear = () => {
     if (editorRef.current) {
       editorRef.current.setValue('');
-      setJsonInput('');
+      setInputContent('');
       setError(null);
     }
   };
@@ -144,21 +170,41 @@ function App() {
   const toggleViewMode = (mode: ViewMode) => {
     if (mode === 'preview') {
       try {
-        if (!jsonInput.trim()) {
-          setParsedJson({});
+        if (!inputContent.trim()) {
+          setParsedPreview({});
           setViewMode('preview');
           return;
         }
-        const parsed = JSON.parse(jsonInput);
-        setParsedJson(parsed);
+
+        let jsonObject;
+        if (conversionMode === 'json-to-toon') {
+          jsonObject = JSON.parse(inputContent);
+        } else {
+          // Parse TOON to JSON for preview
+          const jsonStr = convertToJson(inputContent);
+          jsonObject = JSON.parse(jsonStr);
+        }
+
+        setParsedPreview(jsonObject);
         setViewMode('preview');
         setError(null);
       } catch (e) {
-        setError('Invalid JSON: Cannot switch to Preview mode');
+        setError('Invalid Content: Cannot switch to Preview mode');
       }
     } else {
       setViewMode('editor');
     }
+  };
+
+  const toggleConversionMode = () => {
+    setConversionMode(prev => prev === 'json-to-toon' ? 'toon-to-json' : 'json-to-toon');
+    // Swap content? No, usually user wants to start fresh or convert what they have.
+    // Let's clear for safety or keep? Keeping might be confusing if format mismatches.
+    // Let's clear.
+    setInputContent('');
+    setOutputContent('');
+    if (editorRef.current) editorRef.current.setValue('');
+    setError(null);
   };
 
   const formatSize = (str: string) => {
@@ -203,7 +249,15 @@ function App() {
       <header className="header">
         <div className="title">
           <FileJson size={24} />
-          <span>JSON to TOON</span>
+          <span>{conversionMode === 'json-to-toon' ? 'JSON to TOON' : 'TOON to JSON'}</span>
+          <button
+            className="btn"
+            onClick={toggleConversionMode}
+            title="Switch Direction"
+            style={{ marginLeft: '0.5rem', padding: '4px' }}
+          >
+            <ArrowLeftRight size={16} />
+          </button>
         </div>
         <div className="toolbar">
           <button className="btn" onClick={toggleTheme} title={`Theme: ${theme}`}>
@@ -221,12 +275,14 @@ function App() {
             <Trash2 size={16} /> Clear
           </button>
           <div style={{ width: '1px', background: 'var(--border)', margin: '0 0.5rem' }} />
-          <button className="btn" onClick={handleFormat} title="Format JSON">
+          <button className="btn" onClick={handleFormat} title="Format">
             <Play size={16} /> Format
           </button>
-          <button className="btn" onClick={handleRepair} title="Analyze & Correct JSON">
-            <Stethoscope size={16} /> Analyze & Correct
-          </button>
+          {conversionMode === 'json-to-toon' && (
+            <button className="btn" onClick={handleRepair} title="Analyze & Correct JSON">
+              <Stethoscope size={16} /> Analyze & Correct
+            </button>
+          )}
           <div style={{ width: '1px', background: 'var(--border)', margin: '0 0.5rem' }} />
           <button className="btn" onClick={handleCopy} title="Copy">
             <Copy size={16} /> Copy
@@ -238,8 +294,8 @@ function App() {
             <Clipboard size={16} /> Paste
           </button>
           <div style={{ width: '1px', background: 'var(--border)', margin: '0 0.5rem' }} />
-          <button className="btn btn-primary" onClick={handleConvertToToon}>
-            <Wand2 size={16} /> Convert to TOON
+          <button className="btn btn-primary" onClick={handleConvert}>
+            <Wand2 size={16} /> {conversionMode === 'json-to-toon' ? 'Convert to TOON' : 'Convert to JSON'}
           </button>
         </div>
       </header>
@@ -262,18 +318,18 @@ function App() {
               </button>
             </div>
             <span style={{ fontSize: '0.75rem', opacity: 0.7, marginLeft: 'auto', marginRight: '1rem' }}>
-              {viewMode === 'editor' ? 'Auto-detects errors' : 'Read-only'}
+              {conversionMode === 'json-to-toon' ? 'JSON Input' : 'TOON Input'}
             </span>
           </div>
           <div className="editor-container">
             {viewMode === 'editor' ? (
               <Editor
                 height="100%"
-                defaultLanguage="json"
+                defaultLanguage={conversionMode === 'json-to-toon' ? 'json' : 'text'}
                 theme={theme === 'light' ? 'light' : 'vs-dark'}
-                value={jsonInput}
+                value={inputContent}
                 onChange={(value) => {
-                  setJsonInput(value || '');
+                  setInputContent(value || '');
                   if (error) setError(null);
                 }}
                 onMount={handleEditorDidMount}
@@ -288,7 +344,7 @@ function App() {
             ) : (
               <div style={{ padding: '1rem', overflow: 'auto', height: '100%', background: theme === 'light' ? '#fff' : '#1e1e1e' }}>
                 <ReactJson
-                  src={parsedJson}
+                  src={parsedPreview}
                   theme={theme === 'light' ? 'rjv-default' : 'monokai'}
                   style={{ background: 'transparent' }}
                   displayDataTypes={false}
@@ -297,21 +353,31 @@ function App() {
             )}
           </div>
           <div className="pane-status-bar">
-            Size: {formatSize(jsonInput)}
+            Size: {formatSize(inputContent)}
           </div>
         </div>
 
         <div className="pane">
-          <div className="pane-header">
-            <span>TOON Output</span>
-            <FileCode size={16} />
+          <div className="pane-header" style={{ justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>{conversionMode === 'json-to-toon' ? 'TOON Output' : 'JSON Output'}</span>
+              <FileCode size={16} />
+            </div>
+            <button
+              className="btn"
+              onClick={() => { navigator.clipboard.writeText(outputContent); }}
+              title="Copy Output"
+              style={{ padding: '2px 6px', height: '24px', fontSize: '0.75rem' }}
+            >
+              <Copy size={12} /> Copy
+            </button>
           </div>
           <div className="editor-container">
             <Editor
               height="100%"
-              defaultLanguage="text"
+              defaultLanguage={conversionMode === 'json-to-toon' ? 'text' : 'json'}
               theme={theme === 'light' ? 'light' : 'vs-dark'}
-              value={toonOutput}
+              value={outputContent}
               options={{
                 readOnly: true,
                 minimap: { enabled: false },
@@ -323,7 +389,7 @@ function App() {
             />
           </div>
           <div className="pane-status-bar">
-            Size: {formatSize(toonOutput)}
+            Size: {formatSize(outputContent)}
           </div>
         </div>
       </main>

@@ -62,9 +62,19 @@ function App() {
         setInputContent(formatted);
         editorRef.current?.setValue(formatted);
       } else {
-        // For TOON, we can try to parse to JSON and back to TOON to format it?
-        // Or just leave it as is since we don't have a TOON formatter yet.
-        // Let's try round trip: TOON -> JSON -> TOON
+        // Check if it's JSON first
+        if (validateJson(inputContent)) {
+          setError('Input appears to be JSON. Switch to "JSON to TOON" mode to format.');
+          return;
+        }
+
+        // Check if it's valid TOON
+        if (!validateToon(inputContent)) {
+          setError('Invalid TOON format: Check indentation (2 spaces) and syntax (key: value or - item)');
+          return;
+        }
+
+        // Round trip format: TOON -> JSON -> TOON
         const json = convertToJson(inputContent);
         const toon = convertToToon(json);
         setInputContent(toon);

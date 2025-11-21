@@ -27,9 +27,12 @@ function toToon(data: any, indentLevel: number): string {
     }
 
     if (typeof data === 'string') {
+        // Check for reserved keywords or if it looks like a number
+        if (data === 'true' || data === 'false' || data === 'null' || !isNaN(Number(data))) {
+            return JSON.stringify(data);
+        }
+
         // Remove quotes if the string doesn't contain special characters or spaces
-        // For simplicity, we'll keep quotes for now to ensure safety, or remove them if simple.
-        // TOON often removes quotes.
         if (/^[a-zA-Z0-9_]+$/.test(data)) {
             return data;
         }

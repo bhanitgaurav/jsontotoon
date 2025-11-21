@@ -331,7 +331,7 @@ function App() {
       <footer className="footer">
         Made with <Heart size={14} fill="#ef4444" color="#ef4444" style={{ margin: '0 4px' }} /> by Bhanit Gaurav
         <span style={{ margin: '0 0.5rem', color: 'var(--border)' }}>|</span>
-        <button className="footer-link" onClick={() => setIsModalOpen(true)} style={{ background: 'none', border: 'none', padding: 0, font: 'inherit' }}>
+        <button className="footer-link" onClick={() => { setIsModalOpen(true); setError(null); setFormErrors({ email: '', message: '' }); }} style={{ background: 'none', border: 'none', padding: 0, font: 'inherit' }}>
           Contact / Help
         </button>
       </footer>

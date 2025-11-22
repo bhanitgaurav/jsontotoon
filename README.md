@@ -1,74 +1,39 @@
-# React + TypeScript + Vite
+# JSON to TOON Converter
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Vercel](https://vercelbadge.vercel.app/api/bhanitgaurav/jsontotoon)
 
-Currently, two official plugins are available:
+A free, open-source, and privacy-focused tool to convert **JSON** to **TOON** (Token-Oriented Object Notation) and vice versa.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**[Live Website](https://free-json-to-toon.vercel.app/)**
 
-## React Compiler
+## What is TOON?
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+TOON (Token-Oriented Object Notation) is a concise, human-readable data format designed as an alternative to JSON. It simplifies configuration files and data serialization by removing unnecessary quotes, brackets, and commas, making it easier to read and write while maintaining a structured hierarchy.
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- 🚀 **Bidirectional Conversion**: Instantly convert JSON to TOON and TOON to JSON.
+- 🔒 **Privacy Focused**: All conversions happen **100% client-side**. Your data never leaves your browser.
+- 🎨 **Themes**: Includes Light, Dark, and a special "Space" theme.
+- ✅ **Real-time Validation**: Automatically detects errors in your input.
+- 📋 **Developer Friendly**: Syntax highlighting, copy-to-clipboard, and file size indicators.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Tech Stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **Frontend**: React, TypeScript, Vite
+- **Styling**: Vanilla CSS (Variables & Theming)
+- **Editor**: Monaco Editor
+- **Icons**: Lucide React
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## About the Author
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+This tool was built by **[Bhanit Gaurav](https://bhanitgaurav.com)**, a passionate developer dedicated to building useful open-source tools.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- 🌐 **Website**: [bhanitgaurav.com](https://bhanitgaurav.com)
+- 🐙 **GitHub**: [@bhanitgaurav](https://github.com/bhanitgaurav)
+- 💼 **LinkedIn**: [Bhanit Gaurav](https://www.linkedin.com/in/bhanit-gaurav)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-# jsontotoon
+## License
+
+This project is licensed under the MIT License.

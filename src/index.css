@@ -40,12 +40,13 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 #root {
-  height: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -105,9 +106,11 @@ body {
 }
 
 .main-content {
-  flex: 1;
   display: flex;
   overflow: hidden;
+  height: calc(100vh - 100px);
+  min-height: 400px;
+  /* Prevent it from getting too small */
 }
 
 .pane {
@@ -317,5 +320,72 @@ body {
 
 .footer-link:hover {
   color: var(--accent);
+  text-decoration: underline;
+}
+
+/* SEO Content Section */
+.content-section {
+  background-color: var(--bg-primary);
+  border-top: 1px solid var(--border);
+  padding: 3rem 1.5rem;
+  color: var(--text-primary);
+}
+
+.content-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.content-container h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--accent);
+}
+
+.content-container h2:first-child {
+  margin-top: 0;
+}
+
+.content-container p {
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.content-container ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.content-container li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.faq-item {
+  margin-bottom: 1.5rem;
+}
+
+.faq-question {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.faq-answer {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.content-link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.content-link:hover {
   text-decoration: underline;
 }

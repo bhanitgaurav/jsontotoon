@@ -404,6 +404,49 @@ function App() {
         </div>
       </main>
 
+      <section className="content-section">
+        <div className="content-container">
+          <h2>What is TOON?</h2>
+          <p>
+            TOON (Token-Oriented Object Notation) is a concise, human-readable data format designed as an alternative to JSON.
+            It simplifies configuration files and data serialization by removing unnecessary quotes, brackets, and commas,
+            making it easier to read and write while maintaining a structured hierarchy.
+          </p>
+
+          <h2>Why use this JSON to TOON Converter?</h2>
+          <p>
+            Our free online converter provides a seamless way to switch between JSON and TOON formats. Whether you are a developer
+            looking to simplify your config files or just exploring new data formats, this tool offers:
+          </p>
+          <ul>
+            <li><strong>Bidirectional Conversion:</strong> Instantly convert JSON to TOON and TOON to JSON.</li>
+            <li><strong>Real-time Validation:</strong> Automatically detects errors in your input to prevent invalid conversions.</li>
+            <li><strong>Privacy Focused:</strong> All conversions happen 100% client-side in your browser. Your data never leaves your device.</li>
+            <li><strong>Developer Friendly:</strong> Features like syntax highlighting, copy-to-clipboard, and a dark "Space" theme.</li>
+          </ul>
+
+          <h2>Frequently Asked Questions</h2>
+
+          <div className="faq-item">
+            <div className="faq-question">Is this tool free?</div>
+            <div className="faq-answer">Yes, this JSON to TOON converter is completely free to use for both personal and commercial projects.</div>
+          </div>
+
+          <div className="faq-item">
+            <div className="faq-question">Is my data safe?</div>
+            <div className="faq-answer">Absolutely. We process all data locally in your browser using JavaScript. No data is sent to any server.</div>
+          </div>
+
+          <div className="faq-item">
+            <div className="faq-question">Who created this tool?</div>
+            <div className="faq-answer">
+              This tool was built by <a href="https://bhanitgaurav.com" target="_blank" rel="noopener noreferrer" className="content-link">Bhanit Gaurav</a>,
+              a passionate developer dedicated to building useful open-source tools. Check out more on <a href="https://github.com/bhanitgaurav" target="_blank" rel="noopener noreferrer" className="content-link">GitHub</a>.
+            </div>
+          </div>
+        </div>
+      </section>
+
       <footer className="footer">
         Made with <Heart size={14} fill="#ef4444" color="#ef4444" style={{ margin: '0 4px' }} /> by Bhanit Gaurav
         <span style={{ margin: '0 0.5rem', color: 'var(--border)' }}>|</span>

@@ -408,7 +408,7 @@ function App() {
         <div className="content-container">
           <h2>What is TOON?</h2>
           <p>
-            TOON (Token-Oriented Object Notation) is a concise, human-readable data format designed as an alternative to JSON.
+            <a href="https://github.com/toon-format/toon?tab=readme-ov-file" target="_blank" rel="noopener noreferrer" className="content-link">TOON</a> (Token-Oriented Object Notation) is a concise, human-readable data format designed as an alternative to JSON.
             It simplifies configuration files and data serialization by removing unnecessary quotes, brackets, and commas,
             making it easier to read and write while maintaining a structured hierarchy.
           </p>
@@ -448,7 +448,7 @@ function App() {
       </section>
 
       <footer className="footer">
-        Made with <Heart size={14} fill="#ef4444" color="#ef4444" style={{ margin: '0 4px' }} /> by Bhanit Gaurav
+        Made with <Heart size={14} fill="#ef4444" color="#ef4444" style={{ margin: '0 4px' }} /> by&nbsp;<a href="https://bhanit.com" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'underline' }}>Bhanit Gaurav</a>
         <span style={{ margin: '0 0.5rem', color: 'var(--border)' }}>|</span>
         <button className="footer-link" onClick={() => { setIsModalOpen(true); setError(null); setFormErrors({ email: '', message: '' }); }} style={{ background: 'none', border: 'none', padding: 0, font: 'inherit' }}>
           Contact / Help
